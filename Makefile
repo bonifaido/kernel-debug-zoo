@@ -25,6 +25,9 @@ insmod-lockdep:
 insmod-race:
 	sudo insmod debug_zoo.ko race=1
 
+insmod-slab-poison:
+	sudo insmod debug_zoo.ko slab_poison=1
+
 rmmod:
 	sudo rmmod debug_zoo
 

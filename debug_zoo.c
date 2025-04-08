@@ -97,7 +97,7 @@ static void __lockdep_exit(void)
 }
 
 // Race condition example
-// 
+//
 
 static struct task_struct *thread1;
 static struct task_struct *thread2;
@@ -146,6 +146,31 @@ static void __race_exit(void)
     printk(KERN_INFO "Final value of shared_counter = %lu (expected: %d)\n", shared_counter, 2 * LOOP_COUNT);
 }
 
+// Slab poisoning example
+// This module demonstrates slab poisoning.
+// It allocates memory but uses more than it should, causing a write-out-of-bounds error.
+// This is just for demonstration purposes and should not be done in production code.
+
+static void __init __slub_poison(void)
+{
+    pr_info("slub_poison_demo: loading module\n");
+
+    // Allocate 16 bytes
+    char *buf = kmalloc(16, GFP_KERNEL);
+    if (!buf)
+    {
+        pr_err("slub_poison_demo: allocation failed\n");
+        return;
+    }
+
+    pr_info("slub_poison_demo: allocated buffer at %px\n", buf);
+
+    // Intentionally write past the end (off-by-one)
+    buf[16] = 'X'; // + 1 byte past the end
+
+    pr_info("slub_poison_demo: wrote out-of-bounds\n");
+}
+
 // create params to which sample to run
 
 static int leak = 0;
@@ -163,6 +188,10 @@ MODULE_PARM_DESC(lockdep, "Enable lockdep example");
 static int race = 0;
 module_param(race, int, 0);
 MODULE_PARM_DESC(race, "Race condition example");
+
+static int slab_poison = 0;
+module_param(slab_poison, int, 0);
+MODULE_PARM_DESC(slab_poison, "Enable slab poisoning example");
 
 static int __init my_module_init(void)
 {
@@ -184,6 +213,11 @@ static int __init my_module_init(void)
     if (race)
     {
         __race_init();
+    }
+
+    if (slab_poison)
+    {
+        __slub_poison();
     }
 
     printk(KERN_INFO "Hello, world! This is my first kernel module.\n");
