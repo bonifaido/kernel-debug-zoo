@@ -13,7 +13,7 @@ MODULE_VERSION("1.0");
 // This module allocates memory without freeing it, causing a memory leak.
 // This is just for demonstration purposes and should not be done in production code.
 
-void __leak(void)
+static void __leak(void)
 {
     char *leak = kmalloc(100, GFP_KERNEL);
     if (!leak)
@@ -31,7 +31,7 @@ void __leak(void)
 // It allocates memory, frees it, and then tries to use the freed memory.
 // This is just for demonstration purposes and should not be done in production code.
 
-void __use_after_free(void)
+static void __use_after_free(void)
 {
     char *leak = kzalloc(100, GFP_KERNEL);
     if (!leak)
@@ -151,24 +151,24 @@ static void __race_exit(void)
 // It allocates memory but uses more than it should, causing a write-out-of-bounds error.
 // This is just for demonstration purposes and should not be done in production code.
 
-static void __init __slub_poison(void)
+static void __init __slab_poison(void)
 {
-    pr_info("slub_poison_demo: loading module\n");
+    pr_info("__slab_poison: loading module\n");
 
     // Allocate 16 bytes
     char *buf = kmalloc(16, GFP_KERNEL);
     if (!buf)
     {
-        pr_err("slub_poison_demo: allocation failed\n");
+        pr_err("__slab_poison: allocation failed\n");
         return;
     }
 
-    pr_info("slub_poison_demo: allocated buffer at %px\n", buf);
+    pr_info("__slab_poison: allocated buffer at %px\n", buf);
 
     // Intentionally write past the end (off-by-one)
     buf[16] = 'X'; // + 1 byte past the end
 
-    pr_info("slub_poison_demo: wrote out-of-bounds\n");
+    pr_info("__slab_poison: wrote out-of-bounds\n");
 }
 
 // create params to which sample to run
@@ -217,7 +217,7 @@ static int __init my_module_init(void)
 
     if (slab_poison)
     {
-        __slub_poison();
+        __slab_poison();
     }
 
     printk(KERN_INFO "Hello, world! This is my first kernel module.\n");
