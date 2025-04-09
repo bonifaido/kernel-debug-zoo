@@ -9,3 +9,13 @@ Clone this repo and start a distro with nice debug kernel packages, something li
 ```bash
 limactl start rocky template://rocky --set '.mounts[0].writable=true' --tty=false
 ```
+
+```bash
+limactl shell rocky
+
+make
+
+make insmod[-whatever-scenario]
+
+make logs
+```
