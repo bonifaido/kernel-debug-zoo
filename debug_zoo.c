@@ -51,13 +51,13 @@ static void __use_after_free(void)
 // which can lead to deadlocks or other synchronization issues.
 // This is just for demonstration purposes and should not be done in production code.
 
-static struct task_struct *thread1;
-static struct task_struct *thread2;
+static struct task_struct *lock_thread1;
+static struct task_struct *lock_thread2;
 
 static DEFINE_MUTEX(lock_a);
 static DEFINE_MUTEX(lock_b);
 
-static int thread_fn1(void *data)
+static int lock_thread_fn1(void *data)
 {
     mutex_lock(&lock_a);
     msleep(100);
@@ -70,7 +70,7 @@ static int thread_fn1(void *data)
     return 0;
 }
 
-static int thread_fn2(void *data)
+static int lock_thread_fn2(void *data)
 {
     msleep(50); // Ensure interleaving
     mutex_lock(&lock_b);
@@ -87,8 +87,8 @@ static void __lockdep(void)
 {
     printk(KERN_INFO "lockdep test loaded\n");
 
-    thread1 = kthread_run(thread_fn1, NULL, "lock_thread1");
-    thread2 = kthread_run(thread_fn2, NULL, "lock_thread2");
+    lock_thread1 = kthread_run(lock_thread_fn1, NULL, "lock_thread1");
+    lock_thread2 = kthread_run(lock_thread_fn2, NULL, "lock_thread2");
 }
 
 static void __lockdep_exit(void)
@@ -99,8 +99,8 @@ static void __lockdep_exit(void)
 // Race condition example
 //
 
-static struct task_struct *thread1;
-static struct task_struct *thread2;
+static struct task_struct *race_thread1;
+static struct task_struct *race_thread2;
 
 static unsigned long shared_counter = 0;
 #define LOOP_COUNT 1000000
@@ -128,10 +128,10 @@ static int __race_init(void)
     printk(KERN_INFO "Race module loaded. Starting threads...\n");
     shared_counter = 0;
 
-    thread1 = kthread_run(race_thread_fn, NULL, "race_thread1");
-    thread2 = kthread_run(race_thread_fn, NULL, "race_thread2");
+    race_thread1 = kthread_run(race_thread_fn, NULL, "race_thread1");
+    race_thread2 = kthread_run(race_thread_fn, NULL, "race_thread2");
 
-    if (IS_ERR(thread1) || IS_ERR(thread2))
+    if (IS_ERR(race_thread1) || IS_ERR(race_thread2))
     {
         printk(KERN_ERR "Failed to create threads\n");
         return -1;
@@ -142,7 +142,6 @@ static int __race_init(void)
 
 static void __race_exit(void)
 {
-    printk(KERN_INFO "Race module exiting. Stopping threads...\n");
     printk(KERN_INFO "Final value of shared_counter = %lu (expected: %d)\n", shared_counter, 2 * LOOP_COUNT);
 }
 
@@ -171,7 +170,7 @@ static void __init __slab_poison(void)
     pr_info("__slab_poison: wrote out-of-bounds\n");
 }
 
-// create params to which sample to run
+// params to which sample to run
 
 static int leak = 0;
 module_param(leak, int, 0);
