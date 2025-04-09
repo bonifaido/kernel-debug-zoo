@@ -192,7 +192,7 @@ static int slab_poison = 0;
 module_param(slab_poison, int, 0);
 MODULE_PARM_DESC(slab_poison, "Enable slab poisoning example");
 
-static int __init my_module_init(void)
+static int __init debug_zoo_init(void)
 {
     if (leak)
     {
@@ -219,12 +219,13 @@ static int __init my_module_init(void)
         __slab_poison();
     }
 
-    printk(KERN_INFO "Hello, world! This is my first kernel module.\n");
+    printk(KERN_INFO "Here comes the Debug Zoo!");
+    printk(KERN_INFO "Use 'dmesg' to see the debug messages.");
 
     return 0;
 }
 
-static void __exit my_module_exit(void)
+static void __exit debug_zoo_exit(void)
 {
     if (lockdep)
     {
@@ -236,8 +237,9 @@ static void __exit my_module_exit(void)
         __race_exit();
     }
 
-    printk(KERN_INFO "Goodbye, world! My kernel module is being removed.\n");
+    printk(KERN_INFO "The animals are leaving the stage...");
+    printk(KERN_INFO "Debug Zoo module unloaded");
 }
 
-module_init(my_module_init);
-module_exit(my_module_exit);
+module_init(debug_zoo_init);
+module_exit(debug_zoo_exit);
