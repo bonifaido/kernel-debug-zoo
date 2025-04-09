@@ -214,15 +214,6 @@ kasan=on slub_debug=PU kmemleak=on page_poison=1
 
 ---
 
-## 🎓 Final Words
-
-You’re not breaking the kernel.  
-You're making it **talk**.
-
-Now let's debug something **for real**.
-
----
-
 ## 💬 Questions?
 
 Let’s go break stuff. 😈
