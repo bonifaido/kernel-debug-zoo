@@ -18,24 +18,24 @@ https://github.com/bonifaido/kernel-debug-zoo
 
 ---
 
+## 🔍 What This Workshop Covers
+
+- Why kernel debugging features matter
+- Core tools: `lockdep`, `KASAN`, `KMEMLEAK`, `SLUB`, poisoning
+- How to trigger them with demo modules
+- How Rust could help?
+
+---
+
 ## 🧠 What Is Kernel Debugging?
 
 - Debugging the **Linux kernel** is very different from userspace:
   - No full stack traces by default
   - Panics can crash the system
   - Subtle bugs (e.g., race conditions) hard to reproduce
-- Needs special tooling and awareness
+- Needs special tooling and awareness (out of the box)
 
-🎯 Goal: Make the kernel **observable** and **breakable**, safely
-
----
-
-## 🔍 What This Workshop Covers
-
-- Why kernel debugging features matter
-- Core tools: `lockdep`, `KASAN`, `KMEMLEAK`, `SLUB`, poisoning
-- How to trigger them with demo modules
-- Real logs, real bugs, no hand-waving
+🎯 Goal: Add kernel debbuging tools to your everyday toolbox
 
 ---
 
@@ -46,10 +46,7 @@ https://github.com/bonifaido/kernel-debug-zoo
 - Flags possible deadlocks
 - Works best when locks are used inconsistently
 
-WARNING: possible circular locking dependency detected
-
-Always show details
-
+> WARNING: possible circular locking dependency detected
 
 ✅ Usually enabled  
 🛠 Boot param: `lockdep`
@@ -64,13 +61,24 @@ Always show details
   - Out-of-bounds accesses
 - Reports with stack trace
 
-🛠 Boot params:
-kasan=on kasan.multi_shot=1
-
-Always show details
-
+🛠 Boot params: `kasan=on kasan.multi_shot=1`
 
 ⚙️ Needs: `CONFIG_KASAN=y`
+
+---
+
+## 🧊 `KFENCE` – Kernel Electric Fence
+
+- Lightweight, always-on memory bug detector
+- Similar to KASAN in term os features
+
+🧪 Tradeoffs:
+- Lower accuracy than KASAN
+- Near-zero performance overhead
+- Safe for **production systems**
+
+🛠 Enable: `kfence.sample_interval=100`
+✅ Perfect for long-running systems & catching rare bugs
 
 ---
 
@@ -82,14 +90,7 @@ Always show details
 
 /sys/kernel/debug/kmemleak
 
-Always show details
-
-
-🛠 Boot param:
-kmemleak=on
-
-Always show details
-
+🛠 Boot param: `kmemleak=on`
 
 Enable with: `CONFIG_DEBUG_KMEMLEAK`
 
@@ -102,15 +103,10 @@ Enable with: `CONFIG_DEBUG_KMEMLEAK`
   - Redzone overflows
   - Double frees
   - Use-after-free
-- Works with `kmalloc()`
+- Works with the `kmalloc()` family of functions
+- KASAN provides these features
 
-🛠 Boot param:
-slub_debug=PU
-
-Always show details
-
-
-Other flags: `F`, `Z`, `U`, `A`
+🛠 Boot param: `slub_debug=PU`
 
 ---
 
@@ -120,11 +116,7 @@ Other flags: `F`, `Z`, `U`, `A`
 - Poisons memory (e.g., with `0xaa`)
 - Triggers Oops on access
 
-🛠 Boot param:
-page_poison=1
-
-Always show details
-
+🛠 Boot param: `page_poison=1`
 
 Needs: `CONFIG_PAGE_POISONING`
 
@@ -168,8 +160,6 @@ Needs: `CONFIG_PAGE_POISONING`
 - Fedora/CentOS:
 sudo dnf install kernel-debug sudo grubby --set-default /boot/vmlinuz-<debug-version>
 
-Always show details
-
 - Comes with most debug configs: `KASAN`, `lockdep`, `SLUB_DEBUG`, etc.
 
 ---
@@ -184,9 +174,6 @@ Always show details
 - `CONFIG_PAGE_POISONING=y`
 - Add boot params in GRUB:
 kasan=on slub_debug=PU kmemleak=on page_poison=1
-
-Always show details
-
 
 ---
 
