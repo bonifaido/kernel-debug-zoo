@@ -39,6 +39,21 @@ https://github.com/bonifaido/kernel-debug-zoo
 
 ---
 
+## 🛡️ The 2024 CrowdStrike Kernel Panic
+
+- CrowdStrike Falcon Sensor triggered a **kernel panic** on many Linux systems in April 2024
+- Cause: faulty eBPF hook in a widely deployed version
+- Broke critical infrastructure — DNS, mail, auth, etc.
+
+### 🧠 Lessons:
+- Always **test kernel code across versions**
+- ✅ Validate against all upstream kernels
+- ❌ Don’t test only the “happy path”
+
+✅ Takeaway: kernel-space bugs scale globally.
+
+---
+
 ## 🔐 `lockdep`  
 ### Lock Dependency Validator
 
