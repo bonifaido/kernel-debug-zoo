@@ -2,6 +2,8 @@
 
 This kernel module intentionally breaks the kernel to show its debug capabilities.
 
+There is also a [MARP](https://marp.app) based [presentation](./kernel-debug-zoo.md) about the features inside this repo.
+
 ## Usage
 
 Clone this repo and start a distro with nice debug kernel packages, something like CentOS for example:
