@@ -4,7 +4,7 @@ This kernel module intentionally breaks the kernel to show its debug capabilitie
 
 ## Usage
 
-Clone this repo and start a distro with nice debug kernel packages, something like Rocky Linux for example:
+Clone this repo and start a distro with nice debug kernel packages, something like CentOS for example:
 
 ```bash
 limactl start --name debug template://centos-stream-10 --set '.mounts[0].writable=true' --tty=false --vm-type vz
