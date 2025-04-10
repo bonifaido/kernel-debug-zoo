@@ -21,6 +21,9 @@ static void __leak(void)
         printk(KERN_ERR "Memory allocation failed\n");
         return;
     }
+    strcpy(leak, "This is a memory leak example");
+
+    printk(KERN_INFO "Memory leak example: allocated %p and now leaking\n", leak);
     // Memory is allocated but never freed, causing a memory leak
     // Uncomment the next line to free the memory and avoid the leak
     // kfree(leak);
@@ -194,6 +197,9 @@ MODULE_PARM_DESC(slab_poison, "Enable slab poisoning example");
 
 static int __init debug_zoo_init(void)
 {
+    printk(KERN_INFO "Here comes the Debug Zoo!");
+    printk(KERN_INFO "Use 'dmesg' to see the debug messages.");
+
     if (leak)
     {
         __leak();
@@ -218,9 +224,6 @@ static int __init debug_zoo_init(void)
     {
         __slab_poison();
     }
-
-    printk(KERN_INFO "Here comes the Debug Zoo!");
-    printk(KERN_INFO "Use 'dmesg' to see the debug messages.");
 
     return 0;
 }
