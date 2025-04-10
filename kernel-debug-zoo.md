@@ -21,7 +21,8 @@ https://github.com/bonifaido/kernel-debug-zoo
 ## 🔍 What This Workshop Covers
 
 - Why kernel debugging features matter
-- Core tools: `lockdep`, `KASAN`, `KMEMLEAK`, `SLUB`, poisoning
+- Why you should test against different kernel versions
+- Core tools: `lockdep`, `KASAN`, `KMEMLEAK`, `KFENCE`, `SLUB_DEBUG`
 - How to trigger them with demo modules
 - How Rust could help?
 
