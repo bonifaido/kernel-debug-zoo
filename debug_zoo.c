@@ -148,29 +148,24 @@ static void __race_exit(void)
     printk(KERN_INFO "Final value of shared_counter = %lu (expected: %d)\n", shared_counter, 2 * LOOP_COUNT);
 }
 
-// Slab poisoning example
-// This module demonstrates slab poisoning.
-// It allocates memory but uses more than it should, causing a write-out-of-bounds error.
+// Out-of-bounds example
+// This module demonstrates an out-of-bounds write error.
+// It allocates a buffer of a certain size and then writes beyond its bounds.
 // This is just for demonstration purposes and should not be done in production code.
 
-static void __init __slab_poison(void)
+static void __out_of_bounds(int num_bytes)
 {
-    pr_info("__slab_poison: loading module\n");
-
-    // Allocate 16 bytes
-    char *buf = kmalloc(16, GFP_KERNEL);
-    if (!buf)
+    char *buffer = kmalloc(num_bytes, GFP_KERNEL);
+    if (!buffer)
     {
-        pr_err("__slab_poison: allocation failed\n");
+        printk(KERN_ERR "Memory allocation failed\n");
         return;
     }
 
-    pr_info("__slab_poison: allocated buffer at %px\n", buf);
+    // This writes past the end of our 16-byte allocation!
+    sprintf(buffer, "This string is definitely longer than %d bytes", num_bytes);
 
-    // Intentionally write past the end (off-by-one)
-    buf[16] = 'X'; // + 1 byte past the end
-
-    pr_info("__slab_poison: wrote out-of-bounds\n");
+    kfree(buffer);
 }
 
 // params to which sample to run
@@ -191,9 +186,9 @@ static int race = 0;
 module_param(race, int, 0);
 MODULE_PARM_DESC(race, "Race condition example");
 
-static int slab_poison = 0;
-module_param(slab_poison, int, 0);
-MODULE_PARM_DESC(slab_poison, "Enable slab poisoning example");
+static int out_of_bounds = 0;
+module_param(out_of_bounds, int, 0);
+MODULE_PARM_DESC(out_of_bounds, "Enable out-of-bounds example");
 
 static int __init debug_zoo_init(void)
 {
@@ -220,9 +215,9 @@ static int __init debug_zoo_init(void)
         __race_init();
     }
 
-    if (slab_poison)
+    if (out_of_bounds)
     {
-        __slab_poison();
+        __out_of_bounds(out_of_bounds);
     }
 
     return 0;

@@ -16,8 +16,8 @@ insmod-leak:
 insmod-use-after-free:
 	sudo insmod debug_zoo.ko use_after_free=1
 
-insmod-slab-poison:
-	sudo insmod debug_zoo.ko slab_poison=1
+insmod-out-of-bounds:
+	sudo insmod debug_zoo.ko out_of_bounds=16
 
 insmod-lockdep:
 	sudo insmod debug_zoo.ko lockdep=1
