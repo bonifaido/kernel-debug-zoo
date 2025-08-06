@@ -17,7 +17,7 @@ insmod-use-after-free:
 	sudo insmod debug_zoo.ko use_after_free=1
 
 insmod-out-of-bounds:
-	sudo insmod debug_zoo.ko out_of_bounds=16
+	sudo insmod debug_zoo.ko out_of_bounds=32
 
 insmod-lockdep:
 	sudo insmod debug_zoo.ko lockdep=1
