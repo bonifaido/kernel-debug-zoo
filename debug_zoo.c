@@ -202,7 +202,11 @@ static int __init debug_zoo_init(void)
 
     if (use_after_free)
     {
-        __use_after_free();
+        for (int i = 0; i < use_after_free; i++)
+        {
+            // iterate to demonstrate use-after-free with KFENCE, so it has a better chance to catch it
+            __use_after_free();
+        }
     }
 
     if (lockdep)
@@ -217,7 +221,13 @@ static int __init debug_zoo_init(void)
 
     if (out_of_bounds)
     {
-        __out_of_bounds(out_of_bounds);
+        for (int i = 0; i < 1000; i++)
+        {
+            __out_of_bounds(out_of_bounds);
+            // Sleep to allow the kernel to catch the out-of-bounds write
+            msleep(1);
+            printk(KERN_INFO "Out-of-bounds write iteration %d completed", i);
+        }
     }
 
     return 0;
